@@ -1,0 +1,12 @@
+if TARGET_CUSTOM_IMX6UL
+
+config SYS_BOARD
+	default "custom-imx6ul"
+
+config SYS_VENDOR
+	default "custom-imx"
+
+config SYS_CONFIG_NAME
+	default "custom-imx6ul"
+
+endif

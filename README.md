@@ -1,0 +1,3 @@
+# MYiR-iMX-Uboot
+
+Used for MYS-6ULX-IoT, MYS-6ULX-IND, MYB-6ULX ,MYD-Y6ULX-HMI
