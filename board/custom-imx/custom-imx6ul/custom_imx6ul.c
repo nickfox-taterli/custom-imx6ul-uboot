@@ -244,14 +244,6 @@ int power_init_board(void)
 {
 	return 0;
 }
-
-#ifdef CONFIG_LDO_BYPASS_CHECK
-#error '1'
-void ldo_mode_set(int ldo_bypass)
-{
-	return;
-}
-#endif
 #endif
 #endif
 
