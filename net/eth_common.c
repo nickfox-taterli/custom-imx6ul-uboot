@@ -26,7 +26,6 @@ void eth_parse_enetaddr(const char *addr, uchar *enetaddr)
 
 int eth_getenv_enetaddr(const char *name, uchar *enetaddr)
 {
-	printf("Address get  %pM\n",  name);
 	eth_parse_enetaddr(getenv(name), enetaddr);
 	return is_valid_ethaddr(enetaddr);
 }
