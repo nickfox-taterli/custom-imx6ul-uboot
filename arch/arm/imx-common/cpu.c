@@ -230,9 +230,9 @@ int print_cpuinfo(void)
 		if (!ret)
 			printf(" at %dC\n", cpu_tmp);
 		else
-			debug(" - invalid sensor data\n");
+			printf(" - invalid sensor data\n");
 	} else {
-		debug(" - invalid sensor device\n");
+		printf(" - invalid sensor device\n");
 	}
 #endif
 
