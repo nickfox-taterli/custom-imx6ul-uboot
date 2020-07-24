@@ -25,3 +25,5 @@ CONFIG_CMD_GPIO=y
 # CONFIG_CMD_SNTP is not set
 # CONFIG_CMD_DNS is not set
 # CONFIG_CMD_LINK_LOCAL is not set
+
+# CONFIG_LDO_BYPASS_CHECK is not set

@@ -246,6 +246,7 @@ int power_init_board(void)
 }
 
 #ifdef CONFIG_LDO_BYPASS_CHECK
+#error '1'
 void ldo_mode_set(int ldo_bypass)
 {
 	return;
