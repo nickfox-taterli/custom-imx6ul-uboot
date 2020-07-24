@@ -29,23 +29,7 @@
 #endif
 #endif
 
-#define is_mx6ul_9x9_evk()	CONFIG_IS_ENABLED(TARGET_MX6UL_9X9_EVK)
-
-#ifdef CONFIG_TARGET_MX6UL_9X9_EVK
 #define PHYS_SDRAM_SIZE		SZ_256M
-#define CONFIG_BOOTARGS_CMA_SIZE   "cma=96M "
-#else
-
-#if (CONFIG_DDR_SIZE == 512)
-#define PHYS_SDRAM_SIZE		SZ_512M
-#elif (CONFIG_DDR_SIZE == 256)
-#define PHYS_SDRAM_SIZE		SZ_256M
-#endif
-
-#define CONFIG_BOOTARGS_CMA_SIZE   ""
-/* DCDC used on 14x14 EVK, no PMIC */
-#undef CONFIG_LDO_BYPASS_CHECK
-#endif
 
 /* SPL options */
 /* We default not support SPL
@@ -81,30 +65,7 @@
 
 #endif /* End MMC Config */
 
-/* I2C configs */
-#define CONFIG_CMD_I2C
-#ifdef CONFIG_CMD_I2C
-#define CONFIG_SYS_I2C
-#define CONFIG_SYS_I2C_MXC
-#define CONFIG_SYS_I2C_MXC_I2C1		/* enable I2C bus 1 */
-#define CONFIG_SYS_I2C_MXC_I2C2		/* enable I2C bus 2 */
-#define CONFIG_SYS_I2C_SPEED		100000
-
-/* PMIC only for 9X9 EVK */
-#define CONFIG_POWER
-#define CONFIG_POWER_I2C
-#define CONFIG_POWER_PFUZE3000
-#define CONFIG_POWER_PFUZE3000_I2C_ADDR  0x08
-#endif
-
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
-
-#ifdef CONFIG_SYS_BOOT_NAND
-#define CONFIG_MFG_NAND_PARTITION "mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),160m(rootfs),-(userdata) "
-#else
-#define CONFIG_MFG_NAND_PARTITION ""
-#endif
-
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x80800000\0" \
@@ -112,10 +73,7 @@
 	"fdt_high=0xffffffff\0"	  \
 	"console=ttymxc0\0" \
 	"bootcmd=nand read ${loadaddr} 0x600000 0x800000;nand read ${fdt_addr} 0xe00000 0x200000;bootz ${loadaddr} - ${fdt_addr}\0" \
-	"bootargs=console=ttymxc0,115200 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),-(rootfs) \0"\
-	"nand read ${loadaddr} 0x600000 0x800000;"\
-		"nand read ${fdt_addr} 0xe00000 0x200000;"\
-		"bootz ${loadaddr} - ${fdt_addr} \0"
+	"bootargs=console=ttymxc0,115200 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),-(rootfs) \0"
 
 /* Miscellaneous configurable options */
 #define CONFIG_CMD_MEMTEST
@@ -142,40 +100,17 @@
 
 /* FLASH and environment organization */
 #define CONFIG_SYS_NO_FLASH
-
-#ifdef CONFIG_SYS_BOOT_QSPI
-#define CONFIG_FSL_QSPI
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#elif defined CONFIG_SYS_BOOT_NAND
 #define CONFIG_SYS_USE_NAND
 #define CONFIG_ENV_IS_IN_NAND
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_MTD_DEVICE
 #define CONFIG_MTD_PARTITIONS
-#else
-#define CONFIG_FSL_QSPI
-#define CONFIG_ENV_IS_IN_MMC
-#endif
 
 #define CONFIG_SYS_MMC_ENV_DEV		1   /* USDHC2 */
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
 #define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
 
 #define CONFIG_CMD_BMODE
-
-#ifdef CONFIG_FSL_QSPI
-#define CONFIG_QSPI_BASE		QSPI0_BASE_ADDR
-#define CONFIG_QSPI_MEMMAP_BASE		QSPI0_AMBA_BASE
-
-#define CONFIG_CMD_SF
-#define CONFIG_SPI_FLASH
-#define CONFIG_SPI_FLASH_BAR
-#define CONFIG_SF_DEFAULT_BUS		0
-#define CONFIG_SF_DEFAULT_CS		0
-#define CONFIG_SF_DEFAULT_SPEED	40000000
-#define CONFIG_SF_DEFAULT_MODE		SPI_MODE_0
-#define CONFIG_SPI_FLASH_STMICRO
-#endif
 
 /* NAND stuff */
 #ifdef CONFIG_SYS_USE_NAND
