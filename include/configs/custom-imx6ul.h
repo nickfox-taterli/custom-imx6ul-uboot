@@ -76,6 +76,7 @@
 
 /* PMIC only for 9X9 EVK */
 #define CONFIG_POWER
+#define CONFIG_POWER_I2C
 #endif
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
