@@ -23,6 +23,8 @@
 /* uncomment for BEE support, needs to enable CONFIG_CMD_FUSE */
 /* #define CONFIG_CMD_BEE */
 
+#undef CONFIG_LDO_BYPASS_CHECK
+
 #ifdef CONFIG_SECURE_BOOT
 #ifndef CONFIG_CSF_SIZE
 #define CONFIG_CSF_SIZE 0x4000
