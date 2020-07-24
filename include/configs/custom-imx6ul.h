@@ -65,7 +65,30 @@
 
 #endif /* End MMC Config */
 
+/* I2C configs */
+#define CONFIG_CMD_I2C
+#ifdef CONFIG_CMD_I2C
+#define CONFIG_SYS_I2C
+#define CONFIG_SYS_I2C_MXC
+#define CONFIG_SYS_I2C_MXC_I2C1		/* enable I2C bus 1 */
+#define CONFIG_SYS_I2C_MXC_I2C2		/* enable I2C bus 2 */
+#define CONFIG_SYS_I2C_SPEED		100000
+
+/* PMIC only for 9X9 EVK */
+#define CONFIG_POWER
+#define CONFIG_POWER_I2C
+#define CONFIG_POWER_PFUZE3000
+#define CONFIG_POWER_PFUZE3000_I2C_ADDR  0x08
+#endif
+
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
+
+#ifdef CONFIG_SYS_BOOT_NAND
+#define CONFIG_MFG_NAND_PARTITION "mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),160m(rootfs),-(userdata) "
+#else
+#define CONFIG_MFG_NAND_PARTITION ""
+#endif
+
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x80800000\0" \
@@ -73,7 +96,10 @@
 	"fdt_high=0xffffffff\0"	  \
 	"console=ttymxc0\0" \
 	"bootcmd=nand read ${loadaddr} 0x600000 0x800000;nand read ${fdt_addr} 0xe00000 0x200000;bootz ${loadaddr} - ${fdt_addr}\0" \
-	"bootargs=console=ttymxc0,115200 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),-(rootfs) \0"
+	"bootargs=console=ttymxc0,115200 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),-(rootfs) \0"\
+	"nand read ${loadaddr} 0x600000 0x800000;"\
+		"nand read ${fdt_addr} 0xe00000 0x200000;"\
+		"bootz ${loadaddr} - ${fdt_addr} \0"
 
 /* Miscellaneous configurable options */
 #define CONFIG_CMD_MEMTEST
@@ -98,8 +124,6 @@
 #define CONFIG_SYS_INIT_SP_ADDR \
 	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
 
-/* FLASH and environment organization */
-#define CONFIG_SYS_NO_FLASH
 #define CONFIG_SYS_USE_NAND
 #define CONFIG_ENV_IS_IN_NAND
 #define CONFIG_CMD_MTDPARTS
@@ -129,30 +153,13 @@
 #define CONFIG_APBH_DMA_BURST8
 #endif
 
-#define CONFIG_ENV_SIZE			SZ_8K
-#if defined(CONFIG_ENV_IS_IN_MMC)
-#define CONFIG_ENV_OFFSET		(12 * SZ_64K)
-#elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
-#define CONFIG_ENV_OFFSET		(768 * 1024)
-#define CONFIG_ENV_SECT_SIZE		(64 * 1024)
-#define CONFIG_ENV_SPI_BUS		CONFIG_SF_DEFAULT_BUS
-#define CONFIG_ENV_SPI_CS		CONFIG_SF_DEFAULT_CS
-#define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
-#define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
-#elif defined(CONFIG_ENV_IS_IN_NAND)
-#undef CONFIG_ENV_SIZE
 #define CONFIG_ENV_OFFSET		(5 << 20)
-#define CONFIG_ENV_SECT_SIZE		(1 << 20)
+#define CONFIG_ENV_SECT_SIZE	(1 << 20)
 #define CONFIG_ENV_SIZE			CONFIG_ENV_SECT_SIZE
-#endif
-
 #define CONFIG_IMX_THERMAL
 
 #define CONFIG_MODULE_FUSE
 #define CONFIG_OF_SYSTEM_SETUP
 
-#if defined(CONFIG_ANDROID_SUPPORT)
-#include "mx6ul_14x14_evk_android.h"
-#endif
 
 #endif
