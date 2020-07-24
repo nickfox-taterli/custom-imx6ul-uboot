@@ -112,10 +112,7 @@
 	"fdt_high=0xffffffff\0"	  \
 	"console=ttymxc0\0" \
 	"bootcmd=nand read ${loadaddr} 0x600000 0x800000;nand read ${fdt_addr} 0xe00000 0x200000;bootz ${loadaddr} - ${fdt_addr}\0" \
-	"bootargs=console=ttymxc0,115200 ubi.mtd=4 "  \
-		"root=ubi0:rootfs rootfstype=ubifs "		     \
-		CONFIG_BOOTARGS_CMA_SIZE \
-		"mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),160m(rootfs),-(userdata) \0"\
+	"bootargs=console=ttymxc0,115200 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),-(rootfs) \0"\
 	"nand read ${loadaddr} 0x600000 0x800000;"\
 		"nand read ${fdt_addr} 0xe00000 0x200000;"\
 		"bootz ${loadaddr} - ${fdt_addr} \0"
