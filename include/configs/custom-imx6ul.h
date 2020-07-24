@@ -258,6 +258,8 @@
 #define CONFIG_MODULE_FUSE
 #define CONFIG_OF_SYSTEM_SETUP
 
+#define CONFIG_NET_RANDOM_ETHADDR
+
 #if defined(CONFIG_ANDROID_SUPPORT)
 #include "mx6ul_14x14_evk_android.h"
 #endif
