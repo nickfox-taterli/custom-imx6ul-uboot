@@ -237,6 +237,7 @@
 #define CONFIG_MII
 #define CONFIG_CMD_MII
 #define CONFIG_FEC_ENET_DEV		0
+#define CONFIG_NET_RANDOM_ETHADDR
 
 #if (CONFIG_FEC_ENET_DEV == 0)
 #define IMX_FEC_BASE			ENET_BASE_ADDR
@@ -257,8 +258,6 @@
 
 #define CONFIG_MODULE_FUSE
 #define CONFIG_OF_SYSTEM_SETUP
-
-#define CONFIG_NET_RANDOM_ETHADDR
 
 #if defined(CONFIG_ANDROID_SUPPORT)
 #include "mx6ul_14x14_evk_android.h"
