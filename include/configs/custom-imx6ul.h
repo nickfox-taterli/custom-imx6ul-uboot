@@ -81,13 +81,6 @@
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 
-#ifdef CONFIG_SYS_BOOT_NAND
-#define CONFIG_MFG_NAND_PARTITION "mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),160m(rootfs),-(userdata) "
-#else
-#define CONFIG_MFG_NAND_PARTITION ""
-#endif
-
-
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x80800000\0" \
 	"fdt_addr=0x83000000\0" \
