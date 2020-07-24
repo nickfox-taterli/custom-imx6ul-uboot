@@ -76,9 +76,6 @@
 
 /* PMIC only for 9X9 EVK */
 #define CONFIG_POWER
-#define CONFIG_POWER_I2C
-#define CONFIG_POWER_PFUZE3000
-#define CONFIG_POWER_PFUZE3000_I2C_ADDR  0x08
 #endif
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
@@ -96,10 +93,7 @@
 	"fdt_high=0xffffffff\0"	  \
 	"console=ttymxc0\0" \
 	"bootcmd=nand read ${loadaddr} 0x600000 0x800000;nand read ${fdt_addr} 0xe00000 0x200000;bootz ${loadaddr} - ${fdt_addr}\0" \
-	"bootargs=console=ttymxc0,115200 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),-(rootfs) \0"\
-	"nand read ${loadaddr} 0x600000 0x800000;"\
-		"nand read ${fdt_addr} 0xe00000 0x200000;"\
-		"bootz ${loadaddr} - ${fdt_addr} \0"
+	"bootargs=console=ttymxc0,115200 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs mtdparts=gpmi-nand:5m(boot),1m(env),8m(kernel),2m(dtb),-(rootfs) \0"
 
 /* Miscellaneous configurable options */
 #define CONFIG_CMD_MEMTEST
