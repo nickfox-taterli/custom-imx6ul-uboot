@@ -276,6 +276,63 @@ void board_late_mmc_env_init(void)
 }
 int board_mmc_init(bd_t *bis)
 {
+#ifdef CONFIG_SPL_BUILD
+#error 'sp; '
+#if defined(CONFIG_SYS_BOOT_EMMC)
+	imx_iomux_v3_setup_multiple_pads(usdhc2_emmc_pads,
+					 ARRAY_SIZE(usdhc2_emmc_pads));
+#else
+	imx_iomux_v3_setup_multiple_pads(usdhc2_pads, ARRAY_SIZE(usdhc2_pads));
+#endif
+	gpio_direction_output(USDHC2_PWR_GPIO, 0);
+	udelay(500);
+	gpio_direction_output(USDHC2_PWR_GPIO, 1);
+	usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+	return fsl_esdhc_initialize(bis, &usdhc_cfg[1]);
+#else
+	int i, ret;
+
+	/*
+	 * According to the board_mmc_init() the following map is done:
+	 * (U-Boot device node)    (Physical Port)
+	 * mmc0                    USDHC1
+	 * mmc1                    USDHC2
+	 */
+	for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
+		switch (i) {
+		case 0:
+			imx_iomux_v3_setup_multiple_pads(
+				usdhc1_pads, ARRAY_SIZE(usdhc1_pads));
+			gpio_direction_input(USDHC1_CD_GPIO);
+			usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC_CLK);
+
+			gpio_direction_output(USDHC1_PWR_GPIO, 0);
+			udelay(500);
+			gpio_direction_output(USDHC1_PWR_GPIO, 1);
+			break;
+		case 1:
+#if defined(CONFIG_SYS_BOOT_EMMC)
+			imx_iomux_v3_setup_multiple_pads(
+				usdhc2_emmc_pads, ARRAY_SIZE(usdhc2_emmc_pads));
+#endif
+			/*
+			gpio_direction_output(USDHC2_PWR_GPIO, 0);
+			udelay(500);
+			gpio_direction_output(USDHC2_PWR_GPIO, 1);
+			*/
+			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+			break;
+		default:
+			printf("Warning: you configured more USDHC controllers (%d) than supported by the board\n", i + 1);
+			return -EINVAL;
+			}
+
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
+			if (ret) {
+				printf("Warning: failed to initialize mmc dev %d\n", i);
+			}
+	}
+#endif
 	return 0;
 }
 #endif
@@ -415,50 +472,3 @@ int checkboard(void)
 
 	return 0;
 }
-
-static void ccgr_init(void)
-{
-	struct mxc_ccm_reg *ccm = (struct mxc_ccm_reg *)CCM_BASE_ADDR;
-
-	writel(0xFFFFFFFF, &ccm->CCGR0);
-	writel(0xFFFFFFFF, &ccm->CCGR1);
-	writel(0xFFFFFFFF, &ccm->CCGR2);
-	writel(0xFFFFFFFF, &ccm->CCGR3);
-	writel(0xFFFFFFFF, &ccm->CCGR4);
-	writel(0xFFFFFFFF, &ccm->CCGR5);
-	writel(0xFFFFFFFF, &ccm->CCGR6);
-	writel(0xFFFFFFFF, &ccm->CCGR7);
-}
-
-static void spl_dram_init(void)
-{
-	mx6ul_dram_iocfg(mem_ddr.width, &mx6_ddr_ioregs, &mx6_grp_ioregs);
-	mx6_dram_cfg(&ddr_sysinfo, &mx6_mmcd_calib, &mem_ddr);
-}
-
-void board_init_f(ulong dummy)
-{
-	/* setup AIPS and disable watchdog */
-	arch_cpu_init();
-
-	ccgr_init();
-
-	/* iomux and setup of i2c */
-	board_early_init_f();
-
-	/* setup GP timer */
-	timer_init();
-
-	/* UART clocks enabled and gd valid - init serial console */
-	preloader_console_init();
-
-	/* DDR initialization */
-	spl_dram_init();
-
-	/* Clear the BSS. */
-	memset(__bss_start, 0, __bss_end - __bss_start);
-
-	/* load/boot image from boot device */
-	board_init_r(NULL, 0);
-}
-#endif
