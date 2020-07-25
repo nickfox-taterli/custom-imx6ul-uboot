@@ -100,92 +100,6 @@ static void setup_iomux_uart(void)
 	imx_iomux_v3_setup_multiple_pads(uart1_pads, ARRAY_SIZE(uart1_pads));
 }
 
-#ifdef CONFIG_FSL_ESDHC
-static struct fsl_esdhc_cfg usdhc_cfg[] = {
-	{USDHC1_BASE_ADDR, 0, 4},
-#if defined(CONFIG_SYS_BOOT_EMMC)
-	{USDHC2_BASE_ADDR, 0, 8},
-#endif
-};
-
-#define USDHC1_CD_GPIO	IMX_GPIO_NR(1, 19)
-#define USDHC1_PWR_GPIO	IMX_GPIO_NR(1, 9)
-#define USDHC2_CD_GPIO	IMX_GPIO_NR(4, 5)
-#define USDHC2_PWR_GPIO	IMX_GPIO_NR(4, 10)
-
-int board_mmc_get_env_dev(int devno)
-{
-	if (devno == 1 && mx6_esdhc_fused(USDHC1_BASE_ADDR))
-		devno = 0;
-
-	return devno;
-}
-
-int mmc_map_to_kernel_blk(int devno)
-{
-	if (devno == 0 && mx6_esdhc_fused(USDHC1_BASE_ADDR))
-		devno = 1;
-
-	return devno;
-}
-
-int board_mmc_getcd(struct mmc *mmc)
-{
-	struct fsl_esdhc_cfg *cfg = (struct fsl_esdhc_cfg *)mmc->priv;
-	int ret = 0;
-
-	switch (cfg->esdhc_base) {
-	case USDHC1_BASE_ADDR:
-		ret = !gpio_get_value(USDHC1_CD_GPIO);
-		break;
-	case USDHC2_BASE_ADDR:
-#if defined(CONFIG_SYS_BOOT_EMMC)
-		ret = 1;
-#endif
-		break;
-	}
-
-	return ret;
-}
-
-static int check_mmc_autodetect(void)
-{
-	char *autodetect_str = getenv("mmcautodetect");
-
-	if ((autodetect_str != NULL) &&
-		(strcmp(autodetect_str, "yes") == 0)) {
-		return 1;
-	}
-
-	return 0;
-}
-
-/* This should be defined for each board */
-void board_late_mmc_env_init(void)
-{
-	char cmd[32];
-	char mmcblk[32];
-	u32 dev_no = mmc_get_env_dev();
-
-	if (!check_mmc_autodetect())
-		return;
-
-	setenv_ulong("mmcdev", dev_no);
-
-	/* Set mmcblk env */
-	sprintf(mmcblk, "/dev/mmcblk%dp2 rootwait rw",
-		mmc_map_to_kernel_blk(dev_no));
-	setenv("mmcroot", mmcblk);
-
-	sprintf(cmd, "mmc dev %d", dev_no);
-	run_command(cmd, 0);
-}
-int board_mmc_init(bd_t *bis)
-{
-	return 0;
-}
-#endif
-
 #ifdef CONFIG_NAND_MXS
 static iomux_v3_cfg_t const nand_pads[] = {
 	MX6_PAD_NAND_DATA00__RAWNAND_DATA00 | MUX_PAD_CTRL(GPMI_PAD_CTRL2),
@@ -234,10 +148,6 @@ int board_init(void)
 	/* Address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
-#ifdef	CONFIG_FEC_MXC
-	setup_fec(CONFIG_FEC_ENET_DEV);
-#endif
-
 #ifdef CONFIG_NAND_MXS
 	setup_gpmi_nand();
 #endif
@@ -245,23 +155,8 @@ int board_init(void)
 	return 0;
 }
 
-#ifdef CONFIG_CMD_BMODE
-static const struct boot_mode board_boot_modes[] = {
-	/* 4 bit bus width */
-	{"sd1", MAKE_CFGVAL(0x42, 0x20, 0x00, 0x00)},
-	{"sd2", MAKE_CFGVAL(0x40, 0x28, 0x00, 0x00)},
-	{"qspi1", MAKE_CFGVAL(0x10, 0x00, 0x00, 0x00)},
-	{NULL,	 0},
-};
-#endif
-
 int board_late_init(void)
 {
-#ifdef CONFIG_CMD_BMODE
-	add_board_boot_modes(board_boot_modes);
-#endif
-
-
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
