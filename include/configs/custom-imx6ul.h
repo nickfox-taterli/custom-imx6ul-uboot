@@ -117,8 +117,6 @@
 #define CONFIG_OF_SYSTEM_SETUP
 
 #define CONFIG_AUTOBOOT_KEYED 1
-#define CONFIG_AUTOBOOT_PROMPT "Press ESC to abort autoboot in %d seconds"
-#define CONFIG_AUTOBOOT_DELAY_STR "linux"
 #define CONFIG_AUTOBOOT_STOP_STR "\x1b"
 
 #endif
