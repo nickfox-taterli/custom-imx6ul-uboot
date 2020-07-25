@@ -46,6 +46,19 @@
 #define CONFIG_MXC_UART
 #define CONFIG_MXC_UART_BASE			UART1_BASE
 
+/* MMC Configs */
+#ifdef CONFIG_FSL_USDHC
+#define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
+
+/* NAND pin conflicts with usdhc2 */
+#if defined(CONFIG_SYS_BOOT_EMMC)
+#define CONFIG_SYS_FSL_USDHC_NUM	2
+#elif defined(CONFIG_SYS_BOOT_NAND)
+#define CONFIG_SYS_FSL_USDHC_NUM	1
+#endif
+
+#endif /* End MMC Config */
+
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x80800000\0" \
 	"fdt_addr=0x83000000\0" \
