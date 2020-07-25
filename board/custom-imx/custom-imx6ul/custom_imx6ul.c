@@ -32,10 +32,8 @@
 #include <asm/imx-common/video.h>
 
 #ifdef CONFIG_FSL_FASTBOOT
+#error '1'
 #include <fsl_fastboot.h>
-#ifdef CONFIG_ANDROID_RECOVERY
-#include <recovery.h>
-#endif
 #endif /*CONFIG_FSL_FASTBOOT*/
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -517,53 +515,6 @@ void board_fastboot_setup(void)
 		break;
 	}
 }
-
-#ifdef CONFIG_ANDROID_RECOVERY
-int check_recovery_cmd_file(void)
-{
-	int recovery_mode = 0;
-
-	recovery_mode = recovery_check_and_clean_flag();
-
-	return recovery_mode;
-}
-
-void board_recovery_setup(void)
-{
-	int bootdev = get_boot_device();
-
-	switch (bootdev) {
-#if defined(CONFIG_FASTBOOT_STORAGE_MMC)
-	case SD1_BOOT:
-	case MMC1_BOOT:
-		if (!getenv("bootcmd_android_recovery"))
-			setenv("bootcmd_android_recovery", "boota mmc0 recovery");
-		break;
-	case SD2_BOOT:
-	case MMC2_BOOT:
-		if (!getenv("bootcmd_android_recovery"))
-			setenv("bootcmd_android_recovery", "boota mmc1 recovery");
-		break;
-#endif /*CONFIG_FASTBOOT_STORAGE_MMC*/
-#if defined(CONFIG_FASTBOOT_STORAGE_NAND)
-	case NAND_BOOT:
-		if (!getenv("bootcmd_android_recovery"))
-			setenv("bootcmd_android_recovery",
-				"nand read ${loadaddr} ${recovery_nand_offset} "
-				"${recovery_nand_size};boota ${loadaddr}");
-		break;
-#endif /*CONFIG_FASTBOOT_STORAGE_NAND*/
-
-	default:
-		printf("Unsupported bootup device for recovery: dev: %d\n",
-			bootdev);
-		return;
-	}
-
-	printf("setup env for recovery..\n");
-	setenv("bootcmd", "run bootcmd_android_recovery");
-}
-#endif /*CONFIG_ANDROID_RECOVERY*/
 
 #endif /*CONFIG_FSL_FASTBOOT*/
 
