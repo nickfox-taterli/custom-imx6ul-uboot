@@ -50,11 +50,7 @@
 #define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
 
 /* NAND pin conflicts with usdhc2 */
-#if defined(CONFIG_SYS_BOOT_EMMC)
-#define CONFIG_SYS_FSL_USDHC_NUM	2
-#elif defined(CONFIG_SYS_BOOT_NAND)
 #define CONFIG_SYS_FSL_USDHC_NUM	1
-#endif
 
 #endif /* End MMC Config */
 
