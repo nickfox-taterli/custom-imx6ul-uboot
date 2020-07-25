@@ -146,31 +146,6 @@ static enum qn_func qn_output[8] = {
 	qn_disable, qn_disable
 };
 
-#ifdef CONFIG_SYS_I2C_MXC
-#define PC MUX_PAD_CTRL(I2C_PAD_CTRL)
-/* I2C1 for PMIC and EEPROM */
-static struct i2c_pads_info i2c_pad_info1 = {
-	.scl = {
-		.i2c_mode =  MX6_PAD_UART4_TX_DATA__I2C1_SCL | PC,
-		.gpio_mode = MX6_PAD_UART4_TX_DATA__GPIO1_IO28 | PC,
-		.gp = IMX_GPIO_NR(1, 28),
-	},
-	.sda = {
-		.i2c_mode = MX6_PAD_UART4_RX_DATA__I2C1_SDA | PC,
-		.gpio_mode = MX6_PAD_UART4_RX_DATA__GPIO1_IO29 | PC,
-		.gp = IMX_GPIO_NR(1, 29),
-	},
-};
-
-#ifdef CONFIG_POWER
-#define I2C_PMIC       0
-int power_init_board(void)
-{
-	return 0;
-}
-#endif
-#endif
-
 int dram_init(void)
 {
 	gd->ram_size = get_ram_size((void *)PHYS_SDRAM, PHYS_SDRAM_SIZE);
@@ -482,10 +457,6 @@ int board_init(void)
 {
 	/* Address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
-
-#ifdef CONFIG_SYS_I2C_MXC
-	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);
-#endif
 
 #ifdef	CONFIG_FEC_MXC
 	setup_fec(CONFIG_FEC_ENET_DEV);
