@@ -14,17 +14,7 @@
 #include "mx6_common.h"
 #include <asm/imx-common/gpio.h>
 
-/* uncomment for PLUGIN mode support */
-/* #define CONFIG_USE_PLUGIN */
-
-/* uncomment for SECURE mode support */
-/* #define CONFIG_SECURE_BOOT */
-
-/* uncomment for BEE support, needs to enable CONFIG_CMD_FUSE */
-/* #define CONFIG_CMD_BEE */
-
 #undef CONFIG_LDO_BYPASS_CHECK
-#undef CONFIG_CMD_BMODE
 
 #ifdef CONFIG_SECURE_BOOT
 #ifndef CONFIG_CSF_SIZE
@@ -54,16 +44,6 @@
 
 #define CONFIG_MXC_UART
 #define CONFIG_MXC_UART_BASE			UART1_BASE
-
-/* MMC Configs */
-#ifdef CONFIG_FSL_USDHC
-#define CONFIG_SYS_FSL_ESDHC_ADDR		USDHC2_BASE_ADDR
-
-/* NAND pin conflicts with usdhc2 */
-#define CONFIG_SYS_FSL_USDHC_NUM		1
-#endif /* End MMC Config */
-
-#define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x80800000\0" \
@@ -101,12 +81,6 @@
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_MTD_DEVICE
 #define CONFIG_MTD_PARTITIONS
-
-#define CONFIG_SYS_MMC_ENV_DEV		1   /* USDHC2 */
-#define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
-#define CONFIG_MMCROOT				"/dev/mmcblk1p2"  /* USDHC2 */
-
-#define CONFIG_CMD_BMODE
 
 /* NAND stuff */
 #ifdef CONFIG_SYS_USE_NAND

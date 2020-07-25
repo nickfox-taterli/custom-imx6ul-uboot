@@ -24,9 +24,6 @@
 #include <mmc.h>
 #include <mxsfb.h>
 #include <netdev.h>
-#include <power/pmic.h>
-#include <power/pfuze3000_pmic.h>
-#include "../../freescale/common/pfuze.h"
 #include <usb.h>
 #include <usb/ehci-fsl.h>
 #include <asm/imx-common/video.h>
@@ -36,40 +33,10 @@ DECLARE_GLOBAL_DATA_PTR;
 #define UART_PAD_CTRL  (PAD_CTL_PKE | PAD_CTL_PUE |		\
 	PAD_CTL_PUS_100K_UP | PAD_CTL_SPEED_MED |		\
 	PAD_CTL_DSE_40ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
-
-#define USDHC_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |		\
-	PAD_CTL_PUS_22K_UP  | PAD_CTL_SPEED_LOW |		\
-	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
-
-#define USDHC_DAT3_CD_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |	\
-	PAD_CTL_PUS_100K_DOWN  | PAD_CTL_SPEED_LOW |		\
-	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
-
-#define OTG_ID_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |		\
-	PAD_CTL_PUS_47K_UP  | PAD_CTL_SPEED_LOW |		\
-	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
-
 #define GPMI_PAD_CTRL0 (PAD_CTL_PKE | PAD_CTL_PUE | PAD_CTL_PUS_100K_UP)
 #define GPMI_PAD_CTRL1 (PAD_CTL_DSE_40ohm | PAD_CTL_SPEED_MED | \
 			PAD_CTL_SRE_FAST)
 #define GPMI_PAD_CTRL2 (GPMI_PAD_CTRL0 | GPMI_PAD_CTRL1)
-
-
-#define IOX_SDI IMX_GPIO_NR(5, 10)
-#define IOX_STCP IMX_GPIO_NR(5, 7)
-#define IOX_SHCP IMX_GPIO_NR(5, 11)
-#define IOX_OE IMX_GPIO_NR(5, 8)
-
-static iomux_v3_cfg_t const iox_pads[] = {
-	/* IOX_SDI */
-	MX6_PAD_BOOT_MODE0__GPIO5_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	/* IOX_SHCP */
-	MX6_PAD_BOOT_MODE1__GPIO5_IO11 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	/* IOX_STCP */
-	MX6_PAD_SNVS_TAMPER7__GPIO5_IO07 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	/* IOX_nOE */
-	MX6_PAD_SNVS_TAMPER8__GPIO5_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
-};
 
 int dram_init(void)
 {
@@ -81,18 +48,6 @@ int dram_init(void)
 static iomux_v3_cfg_t const uart1_pads[] = {
 	MX6_PAD_UART1_TX_DATA__UART1_DCE_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
 	MX6_PAD_UART1_RX_DATA__UART1_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
-};
-
-static iomux_v3_cfg_t const usdhc1_pads[] = {
-	MX6_PAD_SD1_CLK__USDHC1_CLK | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD1_CMD__USDHC1_CMD | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD1_DATA0__USDHC1_DATA0 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD1_DATA1__USDHC1_DATA1 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD1_DATA2__USDHC1_DATA2 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_SD1_DATA3__USDHC1_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-
-	/* CD */
-	MX6_PAD_UART1_RTS_B__GPIO1_IO19 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 static void setup_iomux_uart(void)
@@ -157,10 +112,6 @@ int board_init(void)
 
 int board_late_init(void)
 {
-#ifdef CONFIG_ENV_IS_IN_MMC
-	board_late_mmc_env_init();
-#endif
-
 	set_wdog_reset((struct wdog_regs *)WDOG1_BASE_ADDR);
 
 	return 0;
