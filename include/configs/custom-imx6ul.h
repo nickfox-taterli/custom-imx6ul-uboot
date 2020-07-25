@@ -15,6 +15,7 @@
 #include <asm/imx-common/gpio.h>
 
 #undef CONFIG_LDO_BYPASS_CHECK
+#undef CONFIG_FSL_USDHC
 
 #ifdef CONFIG_SECURE_BOOT
 #ifndef CONFIG_CSF_SIZE
