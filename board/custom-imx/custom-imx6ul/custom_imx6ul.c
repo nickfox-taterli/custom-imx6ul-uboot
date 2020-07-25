@@ -31,11 +31,6 @@
 #include <usb/ehci-fsl.h>
 #include <asm/imx-common/video.h>
 
-#ifdef CONFIG_FSL_FASTBOOT
-#error '1'
-#include <fsl_fastboot.h>
-#endif /*CONFIG_FSL_FASTBOOT*/
-
 DECLARE_GLOBAL_DATA_PTR;
 
 #define UART_PAD_CTRL  (PAD_CTL_PKE | PAD_CTL_PUE |		\
@@ -282,6 +277,7 @@ void board_late_mmc_env_init(void)
 int board_mmc_init(bd_t *bis)
 {
 #ifdef CONFIG_SPL_BUILD
+#error 'spl test'
 #if defined(CONFIG_SYS_BOOT_EMMC)
 	imx_iomux_v3_setup_multiple_pads(usdhc2_emmc_pads,
 					 ARRAY_SIZE(usdhc2_emmc_pads));
@@ -477,52 +473,10 @@ int checkboard(void)
 	return 0;
 }
 
-#ifdef CONFIG_FSL_FASTBOOT
-void board_fastboot_setup(void)
-{
-	switch (get_boot_device()) {
-#if defined(CONFIG_FASTBOOT_STORAGE_MMC)
-	case SD1_BOOT:
-	case MMC1_BOOT:
-		if (!getenv("fastboot_dev"))
-			setenv("fastboot_dev", "mmc0");
-		if (!getenv("bootcmd"))
-			setenv("bootcmd", "boota mmc0");
-		break;
-	case SD2_BOOT:
-	case MMC2_BOOT:
-		if (!getenv("fastboot_dev"))
-			setenv("fastboot_dev", "mmc1");
-		if (!getenv("bootcmd"))
-			setenv("bootcmd", "boota mmc1");
-		break;
-#endif /*CONFIG_FASTBOOT_STORAGE_MMC*/
-#if defined(CONFIG_FASTBOOT_STORAGE_NAND)
-	case NAND_BOOT:
-		if (!getenv("fastboot_dev"))
-			setenv("fastboot_dev", "nand");
-		if (!getenv("fbparts"))
-			setenv("fbparts", ANDROID_FASTBOOT_NAND_PARTS);
-		if (!getenv("bootcmd"))
-			setenv("bootcmd",
-				"nand read ${loadaddr} ${boot_nand_offset} "
-				"${boot_nand_size};boota ${loadaddr}");
-		break;
-#endif /*CONFIG_FASTBOOT_STORAGE_NAND*/
-
-	default:
-		printf("unsupported boot devices\n");
-		break;
-	}
-}
-
-#endif /*CONFIG_FSL_FASTBOOT*/
-
 #ifdef CONFIG_SPL_BUILD
 #include <libfdt.h>
 #include <spl.h>
 #include <asm/arch/mx6-ddr.h>
-
 
 static struct mx6ul_iomux_grp_regs mx6_grp_ioregs = {
 	.grp_addds = 0x00000030,
