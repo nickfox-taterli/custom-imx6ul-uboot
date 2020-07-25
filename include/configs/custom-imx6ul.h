@@ -31,7 +31,7 @@
 #endif
 #endif
 
-#define PHYS_SDRAM_SIZE		SZ_256M
+#define PHYS_SDRAM_SIZE					SZ_256M
 
 /* SPL options */
 /* We default not support SPL
@@ -46,22 +46,21 @@
 #define CONFIG_DISPLAY_BOARDINFO
 
 /* Size of malloc() pool */
-#define CONFIG_SYS_MALLOC_LEN		(16 * SZ_1M)
+#define CONFIG_SYS_MALLOC_LEN			(16 * SZ_1M)
 
 #define CONFIG_BOARD_EARLY_INIT_F
 #define CONFIG_BOARD_LATE_INIT
 
 #define CONFIG_MXC_UART
-#define CONFIG_MXC_UART_BASE		UART1_BASE
+#define CONFIG_MXC_UART_BASE			UART1_BASE
 
 /* MMC Configs */
 #ifdef CONFIG_FSL_USDHC
-#define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
+#define CONFIG_SYS_FSL_ESDHC_ADDR		USDHC2_BASE_ADDR
 
 /* NAND pin conflicts with usdhc2 */
-#define CONFIG_SYS_FSL_USDHC_NUM	1
+#define CONFIG_SYS_FSL_USDHC_NUM		1
 #endif /* End MMC Config */
-
 
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 
@@ -79,13 +78,13 @@
 #define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + 0x8000000)
 
 #define CONFIG_SYS_LOAD_ADDR		CONFIG_LOADADDR
-#define CONFIG_SYS_HZ			1000
+#define CONFIG_SYS_HZ				1000
 
-#define CONFIG_STACKSIZE		SZ_128K
+#define CONFIG_STACKSIZE			SZ_128K
 
 /* Physical Memory Map */
 #define CONFIG_NR_DRAM_BANKS		1
-#define PHYS_SDRAM			MMDC0_ARB_BASE_ADDR
+#define PHYS_SDRAM					MMDC0_ARB_BASE_ADDR
 
 #define CONFIG_SYS_SDRAM_BASE		PHYS_SDRAM
 #define CONFIG_SYS_INIT_RAM_ADDR	IRAM_BASE_ADDR
@@ -104,7 +103,7 @@
 
 #define CONFIG_SYS_MMC_ENV_DEV		1   /* USDHC2 */
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
-#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
+#define CONFIG_MMCROOT				"/dev/mmcblk1p2"  /* USDHC2 */
 
 #define CONFIG_CMD_BMODE
 
@@ -125,9 +124,9 @@
 #define CONFIG_APBH_DMA_BURST8
 #endif
 
-#define CONFIG_ENV_OFFSET		(5 << 20)
-#define CONFIG_ENV_SECT_SIZE	(1 << 20)
-#define CONFIG_ENV_SIZE			CONFIG_ENV_SECT_SIZE
+#define CONFIG_ENV_OFFSET			(5 << 20)
+#define CONFIG_ENV_SECT_SIZE		(1 << 20)
+#define CONFIG_ENV_SIZE				CONFIG_ENV_SECT_SIZE
 #define CONFIG_IMX_THERMAL
 
 #define CONFIG_MODULE_FUSE
